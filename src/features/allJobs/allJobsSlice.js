@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import customFetch from '../../utils/axios';
+import authHeader from '../../utils/authHeader';
 
 const initialFiltersState = {
     search: '',
@@ -26,13 +27,7 @@ export const getAllJobs = createAsyncThunk(
     async (_, thunkAPI) => {
         let url = `/jobs`;
         try {
-            const response = await customFetch.get(url, {
-                headers: {
-                    authorization: `Bearer ${
-                        thunkAPI.getState().user.user.token
-                    }`,
-                },
-            });
+            const response = await customFetch.get(url, authHeader(thunkAPI));
             return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue('An error has occured...');
